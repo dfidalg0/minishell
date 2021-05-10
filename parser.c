@@ -97,6 +97,8 @@ Command * parse(char * input) {
 
         // Atualização do ponteiro p conforme o número de caracteres já lidos.
         p += arg->n_read;
+
+        free(arg);
     }
 
     return root;
