@@ -1,14 +1,15 @@
 #ifndef __COMMAND__
 #define __COMMAND__
 
+// Struct usada para sistematizar as informações de um comando
 typedef struct Command {
-    char** argv;
-    int _max_args;
-    struct {
-        int in;
-        int out;
-    } fd;
-    struct Command * next;
+    char** argv; // Lista de argumentos do programa
+    int _max_args; // Contador do limite de argumentos
+    struct IO {
+        char * fin;  // Nome do arquivo que substituirá a entrada padrão
+        char * fout; // Nome do arquivo que substituirá a saída padrão
+    } io;
+    struct Command * next; // Ponteiro para o próximo comando na fila do PIPE
 } Command;
 
 Command * create_command();

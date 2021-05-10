@@ -1,4 +1,3 @@
-#include <fcntl.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -43,12 +42,12 @@ Command * parse(char * input) {
             ++p;
             continue;
         case '>':
-            // Indica que o próximo argumento lido é o nome do arquivo de saída
+            // Indica que o próximo argumento lido será o nome do arquivo de saída
             mode = R_OUT;
             ++p;
             continue;
         case '<':
-            // Indica que o próximo argumento lido é o nome do arquivo de entrada
+            // Indica que o próximo argumento lido será o nome do arquivo de entrada
             mode = R_INP;
             ++p;
             continue;
@@ -64,7 +63,7 @@ Command * parse(char * input) {
             return NULL;
         }
 
-        int fd; // File descriptor a ser usado para leitura e escrita
+        // int fd; // File descriptor a ser usado para leitura e escrita
 
         switch (mode) {
         case R_ARG:
@@ -84,32 +83,12 @@ Command * parse(char * input) {
             curr->argv[argc++] = arg->value;
             break;
         case R_INP:
-            fd = open(arg->value, O_RDONLY);
-
-            if (fd != -1)
-                curr->fd.in = fd;
-            else {
-                print_err(arg->value);
-                print_err(": Arquivo não encontrado\n");
-
-                free_command(root);
-                return NULL;
-            }
-
+            // Preenchimento do arquivo de entrada
+            curr->io.fin = arg->value;
             break;
         case R_OUT:
-            fd = open(arg->value, O_WRONLY | O_CREAT | O_TRUNC, 0664);
-
-            if (fd != -1)
-                curr->fd.out = fd;
-            else {
-                print_err(arg->value);
-                print_err(": Arquivo não encontrado\n");
-
-                free_command(root);
-                return NULL;
-            }
-
+            // Preenchimnto do arquivo de saída
+            curr->io.fout = arg->value;
             break;
         }
 
@@ -171,6 +150,7 @@ __argument * __read_arg(char* begin) {
     int i = 0;
 
     for (char * p = begin; p != end; ++p) {
+        // Aspas são ignoradas
         if (*p != '"')
             arg->value[i++] = *p;
     }
@@ -187,6 +167,6 @@ bool __is_arg_end(char c, bool quotes_on) {
         return c == '\0' || c == '\n';
     }
 
-    // Caso contrário,
+    // Caso contrário, esses caracteres indicam o fim da leitura do argumento
     return c == ' ' || c == '\n' || c == '|' || c == '\0';
 }
