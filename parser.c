@@ -162,11 +162,11 @@ __argument * __read_arg(char* begin) {
 }
 
 bool __is_arg_end(char c, bool quotes_on) {
-    // Com aspas abertas, caracteres | ou espaços são permitidos
+    // Com aspas abertas, caracteres |, >, < ou espaços são permitidos
     if (quotes_on) {
         return c == '\0' || c == '\n';
     }
 
     // Caso contrário, esses caracteres indicam o fim da leitura do argumento
-    return c == ' ' || c == '\n' || c == '|' || c == '\0';
+    return c == ' ' || c == '\n' || c == '|' || c == '>' || c == '<' || c == '\0';
 }
